@@ -3,6 +3,7 @@ import { MatchService } from "../services/match_service.ts";
 import { PlayerService } from "../services/player_service.ts";
 import { DefineFunction, Schema, SlackFunction } from "deno-slack-sdk/mod.ts";
 import { EnrichedSlackFunctionHandler } from "deno-slack-sdk/functions/types.ts";
+import { ContentService } from "../services/content_service.ts";
 
 export const ProcessMatchFunction = DefineFunction({
   callback_id: "process_match",
@@ -68,7 +69,11 @@ export async function processMatch(
       inputs.content,
     );
 
-    const message = messageFormatter.formatMatchResult(match, reader);
+    const contentService = new ContentService(client);
+
+    const content = await contentService.getContent(inputs.content);
+
+    const message = messageFormatter.formatMatchResult(match, reader, content.name);
 
     return {
       outputs: {

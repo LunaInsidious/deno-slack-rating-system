@@ -145,10 +145,7 @@ Deno.test("MatchSchema - valid match object", () => {
       },
     ],
     played_at: "2023-01-01T00:00:00.000Z",
-    content: {
-      id: "test-content",
-      name: "Test Content",
-    },
+    content: "test-content",
   };
 
   const result = validateMatch(validMatch);

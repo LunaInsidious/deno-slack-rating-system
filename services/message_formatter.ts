@@ -2,10 +2,10 @@ import type { Match, Player } from "../schemas/index.ts";
 import { formatPlayerMention, formatRatingChange } from "../utils/formatters.ts";
 
 export class MessageFormatter {
-  formatMatchResult(match: Match, reader: Player): string {
+  formatMatchResult(match: Match, reader: Player, contentName: string): string {
     const lines: string[] = [];
 
-    lines.push(`🎯 *${match.content.name} 試合結果*`);
+    lines.push(`🎯 *${contentName} 試合結果*`);
     lines.push("");
     lines.push(`読み手: ${formatPlayerMention(reader.id)}`);
     lines.push("");
@@ -30,6 +30,8 @@ export class MessageFormatter {
       lines.push(
         `${currentRank}位 ${rankEmoji}\n${mention}\nscore: ${participantInfo.score}\nrate: ${participantInfo.post_rating} (${ratingDiff})\n総合順位: ${participantInfo.ranking}位`,
       );
+      const isLast = i === sortedParticipantInfo.length - 1;
+      if (!isLast) lines.push("");
     }
 
     return lines.join("\n");

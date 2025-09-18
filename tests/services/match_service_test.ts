@@ -189,7 +189,7 @@ Deno.test("MatchService - processMatch 基本機能", async () => {
 
   // マッチの基本情報をチェック
   assertEquals(match.reader_id, "reader1");
-  assertEquals(match.content.id, "競技かるた");
+  assertEquals(match.content, "競技かるた");
 
   // participant_info配列の構造をチェック
   assertEquals(match.participant_info.length, 2);

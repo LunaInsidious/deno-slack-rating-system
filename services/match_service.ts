@@ -67,10 +67,7 @@ export class MatchService {
       reader_id: readerId,
       participant_info: participantInfo,
       played_at: getCurrentTimestamp(),
-      content: {
-        id: content.id,
-        name: content.name,
-      },
+      content: contentId,
     };
 
     await this.saveMatch(match);

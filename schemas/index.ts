@@ -47,7 +47,7 @@ export const MatchSchema = z.object({
   reader_id: z.string(),
   participant_info: z.array(ParticipantInfoSchema),
   played_at: z.string(),
-  content: z.object({ id: z.string(), name: z.string() }),
+  content: z.string(),
 });
 export type Match = z.infer<typeof MatchSchema>;
 

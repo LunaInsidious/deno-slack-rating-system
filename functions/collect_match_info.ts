@@ -1,5 +1,5 @@
 import { DefineFunction, Schema, SlackFunction } from "deno-slack-sdk/mod.ts";
-import { validateParticipants } from "../utils/parsers.ts";
+import { validateParticipantsAndReader } from "../utils/parsers.ts";
 import { PlayerService } from "../services/player_service.ts";
 import { ContentsDatastore } from "../datastores/contents.ts";
 import { type Content, validateContentArray } from "../schemas/index.ts";
@@ -167,7 +167,7 @@ export default SlackFunction(
         return { error: "参加者を選択してください" };
       }
 
-      validateParticipants(participants);
+      validateParticipantsAndReader(participants, reader);
 
       // 参加者情報を取得
       const playerService = new PlayerService(client);

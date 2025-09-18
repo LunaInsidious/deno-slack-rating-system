@@ -31,10 +31,7 @@ function createTestMatch(): Match {
       },
     ],
     played_at: "2023-01-01T10:00:00.000Z",
-    content: {
-      id: "テスト競技",
-      name: "テスト競技",
-    },
+    content: "テスト競技",
   };
 }
 
@@ -73,7 +70,7 @@ Deno.test("MessageFormatter - formatMatchResult", () => {
   const players = createTestPlayers();
   const reader = players.find((p) => p.id === "reader123");
 
-  const result = formatter.formatMatchResult(match, reader!);
+  const result = formatter.formatMatchResult(match, reader!, "テスト競技");
 
   // 基本的な要素が含まれているかチェック
   assertEquals(result.includes("🎯 *テスト競技 試合結果*"), true);
@@ -101,7 +98,7 @@ Deno.test("MessageFormatter - getRankEmoji private method behavior", () => {
   const players = createTestPlayers();
   const reader = players.find((p) => p.id === "reader123");
 
-  const result = formatter.formatMatchResult(match, reader!);
+  const result = formatter.formatMatchResult(match, reader!, "競技かるた");
 
   // ランク絵文字が正しく使われているかチェック
   assertEquals(result.includes("🥇"), true); // 1位

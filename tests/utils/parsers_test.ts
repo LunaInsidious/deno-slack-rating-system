@@ -1,75 +1,94 @@
 import { assert, assertThrows } from "@std/assert";
-import { validateParticipants } from "../../utils/parsers.ts";
+import { validateParticipantsAndReader } from "../../utils/parsers.ts";
 
-Deno.test("validateParticipants - 正常な2人の参加者", () => {
+Deno.test("validateParticipantsAndReader - 正常な2人の参加者", () => {
   const participants = ["player1", "player2"];
+  const reader = "reader1";
 
   // エラーが発生しないことを確認
-  validateParticipants(participants);
+  validateParticipantsAndReader(participants, reader);
   assert(true); // 例外が発生しなければテスト成功
 });
 
-Deno.test("validateParticipants - 正常な4人の参加者", () => {
+Deno.test("validateParticipantsAndReader - 正常な4人の参加者", () => {
   const participants = ["alice", "bob", "charlie", "diana"];
+  const reader = "reader1";
 
   // エラーが発生しないことを確認
-  validateParticipants(participants);
+  validateParticipantsAndReader(participants, reader);
   assert(true); // 例外が発生しなければテスト成功
 });
 
-Deno.test("validateParticipants - エラー: 参加者が1人のみ", () => {
+Deno.test("validateParticipantsAndReader - エラー: 参加者が1人のみ", () => {
   const participants = ["player1"];
+  const reader = "reader1";
 
   assertThrows(
-    () => validateParticipants(participants),
+    () => validateParticipantsAndReader(participants, reader),
     Error,
     "参加者は2名以上必要です。",
   );
 });
 
-Deno.test("validateParticipants - エラー: 参加者が0人", () => {
+Deno.test("validateParticipantsAndReader - エラー: 参加者が0人", () => {
   const participants: string[] = [];
+  const reader = "reader1";
 
   assertThrows(
-    () => validateParticipants(participants),
+    () => validateParticipantsAndReader(participants, reader),
     Error,
     "参加者は2名以上必要です。",
   );
 });
 
-Deno.test("validateParticipants - エラー: 重複した参加者（2人中2人重複）", () => {
+Deno.test("validateParticipantsAndReader - エラー: 参加者内での重複", () => {
   const participants = ["player1", "player1"];
+  const reader = "reader1";
 
   assertThrows(
-    () => validateParticipants(participants),
+    () => validateParticipantsAndReader(participants, reader),
     Error,
     "参加者が重複しています。",
   );
 });
 
-Deno.test("validateParticipants - エラー: 重複した参加者（3人中2人重複）", () => {
+Deno.test("validateParticipantsAndReader - エラー: 参加者内での重複（3人中2人重複）", () => {
   const participants = ["player1", "player2", "player1"];
+  const reader = "reader1";
 
   assertThrows(
-    () => validateParticipants(participants),
+    () => validateParticipantsAndReader(participants, reader),
     Error,
     "参加者が重複しています。",
   );
 });
 
-Deno.test("validateParticipants - 空文字列を含む参加者", () => {
+Deno.test("validateParticipantsAndReader - エラー: 読み手が参加者に含まれる", () => {
+  const participants = ["player1", "player2", "reader1"];
+  const reader = "reader1";
+
+  assertThrows(
+    () => validateParticipantsAndReader(participants, reader),
+    Error,
+    "参加者が重複しています。",
+  );
+});
+
+Deno.test("validateParticipantsAndReader - 空文字列を含む参加者", () => {
   const participants = ["player1", "", "player2"];
+  const reader = "reader1";
 
   // 空文字列も有効な参加者IDとして扱われる
-  validateParticipants(participants);
+  validateParticipantsAndReader(participants, reader);
   assert(true); // 例外が発生しなければテスト成功
 });
 
-Deno.test("validateParticipants - 空文字列の重複", () => {
+Deno.test("validateParticipantsAndReader - 空文字列の重複", () => {
   const participants = ["player1", "", ""];
+  const reader = "reader1";
 
   assertThrows(
-    () => validateParticipants(participants),
+    () => validateParticipantsAndReader(participants, reader),
     Error,
     "参加者が重複しています。",
   );
