@@ -58,7 +58,7 @@ export default SlackFunction(
       if (rankings.length === 0) {
         return {
           outputs: {
-            message: `${selectedContentId}のレーティングデータがありません`,
+            message: `${selectedContent}のレーティングデータがありません`,
             blocks: [],
           },
         };
