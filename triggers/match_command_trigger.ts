@@ -1,5 +1,5 @@
 import { Trigger } from "deno-slack-api/types.ts";
-import { TriggerTypes } from "deno-slack-api/mod.ts";
+import { TriggerContextData, TriggerTypes } from "deno-slack-api/mod.ts";
 import { RatingWorkflow } from "../workflows/rating_workflow.ts";
 
 const matchCommandTrigger: Trigger<typeof RatingWorkflow.definition> = {
@@ -9,7 +9,7 @@ const matchCommandTrigger: Trigger<typeof RatingWorkflow.definition> = {
   workflow: `#/workflows/${RatingWorkflow.definition.callback_id}`,
   inputs: {
     interactivity: {
-      value: "{{data.interactivity}}",
+      value: TriggerContextData.Shortcut.interactivity,
     },
   },
 };
