@@ -1,6 +1,7 @@
 import { assertEquals } from "@std/assert";
 import { MessageFormatter } from "../../services/message_formatter.ts";
 import type { Match, Player } from "../../schemas/index.ts";
+import { SlackAPIClient } from "deno-slack-sdk/types.ts";
 
 // テスト用のデータを作成
 function createTestMatch(): Match {
@@ -64,13 +65,50 @@ function createTestPlayers(): Player[] {
   ];
 }
 
-Deno.test("MessageFormatter - formatMatchResult", () => {
-  const formatter = new MessageFormatter();
+// モックclientを作成
+function createMockClient() {
+  return {
+    apps: {
+      datastore: {
+        query: () => ({
+          ok: true,
+          items: [
+            {
+              id: "rating1",
+              player_id: "player1",
+              content_id: "テスト競技",
+              rating: 1494.5,
+              updated_at: "2023-01-01T10:00:00.000Z",
+            },
+            {
+              id: "rating2",
+              player_id: "player2",
+              content_id: "テスト競技",
+              rating: 1452,
+              updated_at: "2023-01-01T10:00:00.000Z",
+            },
+            {
+              id: "rating3",
+              player_id: "player3",
+              content_id: "テスト競技",
+              rating: 1403.5,
+              updated_at: "2023-01-01T10:00:00.000Z",
+            },
+          ],
+        }),
+      },
+    },
+  } as unknown as SlackAPIClient;
+}
+
+Deno.test("MessageFormatter - formatMatchResult", async () => {
+  const mockClient = createMockClient();
+  const formatter = new MessageFormatter(mockClient);
   const match = createTestMatch();
   const players = createTestPlayers();
   const reader = players.find((p) => p.id === "reader123");
 
-  const result = formatter.formatMatchResult(match, reader!, "テスト競技");
+  const result = await formatter.formatMatchResult(match, reader!, "テスト競技");
 
   // 基本的な要素が含まれているかチェック
   assertEquals(result.includes("🎯 *テスト競技 試合結果*"), true);
@@ -90,15 +128,21 @@ Deno.test("MessageFormatter - formatMatchResult", () => {
   assertEquals(result.includes("rate: 1494.5 (-5.50)"), true);
   assertEquals(result.includes("rate: 1452 (+2.00)"), true);
   assertEquals(result.includes("rate: 1403.5 (+3.50)"), true);
+
+  // 総合順位が含まれているかチェック
+  assertEquals(result.includes("総合順位: 1位"), true);
+  assertEquals(result.includes("総合順位: 2位"), true);
+  assertEquals(result.includes("総合順位: 3位"), true);
 });
 
-Deno.test("MessageFormatter - getRankEmoji private method behavior", () => {
-  const formatter = new MessageFormatter();
+Deno.test("MessageFormatter - getRankEmoji private method behavior", async () => {
+  const mockClient = createMockClient();
+  const formatter = new MessageFormatter(mockClient);
   const match = createTestMatch();
   const players = createTestPlayers();
   const reader = players.find((p) => p.id === "reader123");
 
-  const result = formatter.formatMatchResult(match, reader!, "競技かるた");
+  const result = await formatter.formatMatchResult(match, reader!, "競技かるた");
 
   // ランク絵文字が正しく使われているかチェック
   assertEquals(result.includes("🥇"), true); // 1位

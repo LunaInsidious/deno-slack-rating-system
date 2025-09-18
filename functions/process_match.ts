@@ -57,7 +57,7 @@ export async function processMatch(
 
     const playerService = new PlayerService(client);
     const matchService = new MatchService(client);
-    const messageFormatter = new MessageFormatter();
+    const messageFormatter = new MessageFormatter(client);
 
     const readerId = playerService.resolvePlayerIds([inputs.reader])[0];
 
@@ -73,7 +73,7 @@ export async function processMatch(
 
     const content = await contentService.getContent(inputs.content);
 
-    const message = messageFormatter.formatMatchResult(match, reader, content.name);
+    const message = await messageFormatter.formatMatchResult(match, reader, content.name);
 
     return {
       outputs: {
