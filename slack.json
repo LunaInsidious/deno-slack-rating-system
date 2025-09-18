@@ -1,0 +1,6 @@
+{
+  "hooks": {
+    "get-manifest": "deno task get-manifest",
+    "get-trigger": "deno task get-trigger"
+  }
+}
