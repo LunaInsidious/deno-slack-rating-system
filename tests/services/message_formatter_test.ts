@@ -149,3 +149,23 @@ Deno.test("MessageFormatter - getRankEmoji private method behavior", async () =>
   assertEquals(result.includes("🥈"), true); // 2位
   assertEquals(result.includes("🥉"), true); // 3位
 });
+
+Deno.test("MessageFormatter - formatMatchResult without reader", async () => {
+  const mockClient = createMockClient();
+  const formatter = new MessageFormatter(mockClient);
+  const match = createTestMatch();
+
+  // reader を undefined として呼び出し
+  const result = await formatter.formatMatchResult(match, undefined, "テスト競技");
+
+  // 基本的な要素が含まれているかチェック
+  assertEquals(result.includes("🎯 *テスト競技 試合結果*"), true);
+  // 読み手が含まれていないことを確認
+  assertEquals(result.includes("読み手:"), false);
+  assertEquals(result.includes("*順位表:*"), true);
+
+  // 各プレイヤーの情報が含まれているかチェック
+  assertEquals(result.includes("player1"), true);
+  assertEquals(result.includes("player2"), true);
+  assertEquals(result.includes("player3"), true);
+});

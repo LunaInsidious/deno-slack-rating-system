@@ -25,7 +25,7 @@ export const ProcessMatchFunction = DefineFunction({
         description: "試合を行った種目のID",
       },
     },
-    required: ["reader", "participant_scores", "content"],
+    required: ["participant_scores", "content"],
   },
   output_parameters: {
     properties: {
@@ -59,9 +59,13 @@ export async function processMatch(
     const matchService = new MatchService(client);
     const messageFormatter = new MessageFormatter(client);
 
-    const readerId = playerService.resolvePlayerIds([inputs.reader])[0];
+    let readerId: string | undefined;
+    let reader: { id: string; name: string } | undefined;
 
-    const reader = await playerService.getOrCreatePlayer(readerId);
+    if (inputs.reader) {
+      readerId = playerService.resolvePlayerIds([inputs.reader])[0];
+      reader = await playerService.getOrCreatePlayer(readerId);
+    }
 
     const match = await matchService.processMatch(
       readerId,

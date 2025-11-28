@@ -19,6 +19,24 @@ Deno.test("validateParticipantsAndReader - 正常な4人の参加者", () => {
   assert(true); // 例外が発生しなければテスト成功
 });
 
+Deno.test("validateParticipantsAndReader - 読み手なし", () => {
+  const participants = ["player1", "player2"];
+
+  // 読み手なしでもエラーが発生しないことを確認
+  validateParticipantsAndReader(participants);
+  assert(true); // 例外が発生しなければテスト成功
+});
+
+Deno.test("validateParticipantsAndReader - 読み手なし（参加者内重複）", () => {
+  const participants = ["player1", "player1"];
+
+  assertThrows(
+    () => validateParticipantsAndReader(participants),
+    Error,
+    "参加者が重複しています。",
+  );
+});
+
 Deno.test("validateParticipantsAndReader - エラー: 参加者が1人のみ", () => {
   const participants = ["player1"];
   const reader = "reader1";

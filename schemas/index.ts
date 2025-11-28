@@ -44,7 +44,7 @@ export type ParticipantInfo = z.infer<typeof ParticipantInfoSchema>;
 // Match schema
 export const MatchSchema = z.object({
   id: z.string(),
-  reader_id: z.string(),
+  reader_id: z.string().optional(),
   participant_info: z.array(ParticipantInfoSchema),
   played_at: z.string(),
   content: z.string(),

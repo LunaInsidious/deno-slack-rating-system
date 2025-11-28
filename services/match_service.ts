@@ -22,7 +22,7 @@ export class MatchService {
   }
 
   async processMatch(
-    readerId: string,
+    readerId: string | undefined,
     participantScores: Map<string, number>,
     contentId: string,
   ): Promise<Match> {

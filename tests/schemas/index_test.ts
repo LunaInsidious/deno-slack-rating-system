@@ -167,3 +167,25 @@ Deno.test("MatchSchema - invalid match object", () => {
     "Expected array",
   );
 });
+
+Deno.test("MatchSchema - valid match object without reader_id", () => {
+  const validMatch = {
+    id: "match1",
+    participant_info: [
+      {
+        participant_id: "player1",
+        score: 100,
+        pre_rating: 1500,
+        post_rating: 1510,
+        ranking: 1,
+      },
+    ],
+    played_at: "2023-01-01T00:00:00.000Z",
+    content: "test-content",
+  };
+
+  const result = validateMatch(validMatch);
+  assertEquals(result.id, validMatch.id);
+  assertEquals(result.reader_id, undefined);
+  assertEquals(result.participant_info, validMatch.participant_info);
+});

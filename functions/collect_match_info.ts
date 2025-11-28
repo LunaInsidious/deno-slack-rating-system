@@ -32,7 +32,7 @@ export const CollectMatchInfoFunction = DefineFunction({
         description: "参加者IDをキー、得点を値とするオブジェクト",
       },
     },
-    required: ["content", "reader", "participant_scores"],
+    required: ["content", "participant_scores"],
   },
 });
 
@@ -90,7 +90,8 @@ export default SlackFunction(
             {
               "type": "input",
               "block_id": "reader_block",
-              "label": { "type": "plain_text", "text": "読み手を選択してください" },
+              "optional": true,
+              "label": { "type": "plain_text", "text": "読み手を選択してください（任意）" },
               "element": {
                 "type": "users_select",
                 "action_id": "reader_select",
@@ -148,7 +149,7 @@ export default SlackFunction(
             content = (actionValue as any).selected_option?.value || "";
           } else if (actionId === "reader_select") {
             // deno-lint-ignore no-explicit-any
-            reader = (actionValue as any).selected_user || "読み手なし";
+            reader = (actionValue as any).selected_user || "";
           } else if (actionId === "participants_select") {
             // deno-lint-ignore no-explicit-any
             participants = (actionValue as any).selected_users || [];
@@ -160,14 +161,11 @@ export default SlackFunction(
       if (!content) {
         return { error: "種目を選択してください" };
       }
-      if (!reader) {
-        return { error: "読み手を選択してください" };
-      }
       if (participants.length === 0) {
         return { error: "参加者を選択してください" };
       }
 
-      validateParticipantsAndReader(participants, reader);
+      validateParticipantsAndReader(participants, reader || undefined);
 
       // 参加者情報を取得
       const playerService = new PlayerService(client);
@@ -215,7 +213,7 @@ export default SlackFunction(
         const metadata = JSON.parse(view.private_metadata || "{}");
         const { content, reader, participants } = metadata;
 
-        if (!content || !reader || !participants) {
+        if (!content || !participants) {
           return { error: "基本情報が不足しています" };
         }
 
@@ -240,13 +238,23 @@ export default SlackFunction(
 
         console.log("Match info collected:", { content, reader, participantScores });
 
+        const outputs: {
+          content: string;
+          participant_scores: Record<string, number>;
+          reader?: string;
+        } = {
+          content,
+          participant_scores: participantScores,
+        };
+
+        // readerが選択されている場合のみ出力に含める
+        if (reader) {
+          outputs.reader = reader;
+        }
+
         await client.functions.completeSuccess({
           function_execution_id: body.function_data.execution_id,
-          outputs: {
-            content,
-            reader,
-            participant_scores: participantScores,
-          },
+          outputs,
         });
       } catch (error) {
         console.error("Error processing scores:", error);

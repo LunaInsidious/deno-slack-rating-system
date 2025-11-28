@@ -10,13 +10,19 @@ export class MessageFormatter {
     this.contentService = new ContentService(client);
   }
 
-  async formatMatchResult(match: Match, reader: Player, contentName: string): Promise<string> {
+  async formatMatchResult(
+    match: Match,
+    reader: Player | undefined,
+    contentName: string,
+  ): Promise<string> {
     const lines: string[] = [];
 
     lines.push(`🎯 *${contentName} 試合結果*`);
     lines.push("");
-    lines.push(`読み手: ${formatPlayerMention(reader.id)}`);
-    lines.push("");
+    if (reader) {
+      lines.push(`読み手: ${formatPlayerMention(reader.id)}`);
+      lines.push("");
+    }
     lines.push("*順位表:*");
 
     // 全体順位を取得
