@@ -148,7 +148,7 @@ export default SlackFunction(
             content = (actionValue as any).selected_option?.value || "";
           } else if (actionId === "reader_select") {
             // deno-lint-ignore no-explicit-any
-            reader = (actionValue as any).selected_user || "";
+            reader = (actionValue as any).selected_user || "読み手なし";
           } else if (actionId === "participants_select") {
             // deno-lint-ignore no-explicit-any
             participants = (actionValue as any).selected_users || [];

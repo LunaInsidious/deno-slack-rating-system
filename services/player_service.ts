@@ -91,6 +91,9 @@ export class PlayerService {
     const resolvedIds: string[] = [];
 
     for (const name of playerNames) {
+      if (name === "読み手なし") {
+        continue;
+      }
       if (name.startsWith("<@") && name.endsWith(">")) {
         const userId = name.slice(2, -1).split("|")[0];
         resolvedIds.push(userId);

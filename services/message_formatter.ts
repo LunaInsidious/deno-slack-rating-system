@@ -49,7 +49,7 @@ export class MessageFormatter {
       }
 
       lines.push(
-        `${currentRank}位 ${rankEmoji}\n${mention}\nscore: ${participantInfo.score}\nrate: ${participantInfo.post_rating} (${ratingDiff})\n総合順位: ${overallRank}`,
+        `${currentRank}位 ${rankEmoji}\n${mention}\nscore: ${participantInfo.score}\nrate: ${participantInfo.post_rating} (${ratingDiff})\n総合順位: ${overallRank}位`,
       );
       const isLast = i === sortedParticipantInfo.length - 1;
       if (!isLast) lines.push("");
