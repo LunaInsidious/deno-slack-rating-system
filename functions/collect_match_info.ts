@@ -3,6 +3,7 @@ import { validateParticipantsAndReader } from "../utils/parsers.ts";
 import { PlayerService } from "../services/player_service.ts";
 import { ContentsDatastore } from "../datastores/contents.ts";
 import { type Content, validateContentArray } from "../schemas/index.ts";
+import { NO_READER_USER_ID } from "../config/constant.ts";
 
 export const CollectMatchInfoFunction = DefineFunction({
   callback_id: "collect_match_info",
@@ -71,40 +72,40 @@ export default SlackFunction(
           title: { type: "plain_text", text: "📝 試合情報入力" },
           submit: { type: "plain_text", text: "次へ" },
           close: { type: "plain_text", text: "キャンセル" },
-          // blocks内の要素はblock kit builderで見やすいようにダブルクオーテーションで囲んでいる
           blocks: [
             {
-              "type": "input",
-              "block_id": "content_block",
-              "label": { "type": "plain_text", "text": "種目を選択してください" },
-              "element": {
-                "type": "static_select",
-                "action_id": "content_select",
-                "placeholder": { "type": "plain_text", "text": "種目を選択" },
-                "options": validatedContents.map((content: Content) => ({
-                  "text": { "type": "plain_text", "text": content.name },
-                  "value": content.id,
+              type: "input",
+              block_id: "content_block",
+              label: { type: "plain_text", text: "種目を選択してください" },
+              element: {
+                type: "static_select",
+                action_id: "content_select",
+                placeholder: { type: "plain_text", text: "種目を選択" },
+                options: validatedContents.map((content: Content) => ({
+                  text: { type: "plain_text", text: content.name },
+                  value: content.id,
                 })),
               },
             },
             {
-              "type": "input",
-              "block_id": "reader_block",
-              "label": { "type": "plain_text", "text": "読み手を選択してください" },
-              "element": {
-                "type": "users_select",
-                "action_id": "reader_select",
-                "placeholder": { "type": "plain_text", "text": "読み手を選択" },
+              type: "input",
+              block_id: "reader_block",
+              optional: true,
+              label: { type: "plain_text", text: "読み手を選択してください" },
+              element: {
+                type: "users_select",
+                action_id: "reader_select",
+                placeholder: { type: "plain_text", text: "読み手を選択" },
               },
             },
             {
-              "type": "input",
-              "block_id": "participants_block",
-              "label": { "type": "plain_text", "text": "参加者を選択してください" },
-              "element": {
-                "type": "multi_users_select",
-                "action_id": "participants_select",
-                "placeholder": { "type": "plain_text", "text": "参加者を選択" },
+              type: "input",
+              block_id: "participants_block",
+              label: { type: "plain_text", text: "参加者を選択してください" },
+              element: {
+                type: "multi_users_select",
+                action_id: "participants_select",
+                placeholder: { type: "plain_text", text: "参加者を選択" },
               },
             },
           ],
@@ -148,7 +149,7 @@ export default SlackFunction(
             content = (actionValue as any).selected_option?.value || "";
           } else if (actionId === "reader_select") {
             // deno-lint-ignore no-explicit-any
-            reader = (actionValue as any).selected_user || "読み手なし";
+            reader = (actionValue as any).selected_user || NO_READER_USER_ID;
           } else if (actionId === "participants_select") {
             // deno-lint-ignore no-explicit-any
             participants = (actionValue as any).selected_users || [];
@@ -173,18 +174,17 @@ export default SlackFunction(
       const playerService = new PlayerService(client);
       const players = await playerService.getPlayers(participants);
 
-      // blocks内の要素はblock kit builderで見やすいようにダブルクオーテーションで囲んでいる
       const blocks = players.map((player) => ({
-        "type": "input",
-        "block_id": `score_${player.id}`,
-        "element": {
-          "type": "number_input",
-          "action_id": `score_${player.id}`,
-          "is_decimal_allowed": false,
-          "placeholder": { "type": "plain_text", "text": "得点を入力" },
-          "min_value": "0",
+        type: "input",
+        block_id: `score_${player.id}`,
+        element: {
+          type: "number_input",
+          action_id: `score_${player.id}`,
+          is_decimal_allowed: false,
+          placeholder: { type: "plain_text", text: "得点を入力" },
+          min_value: "0",
         },
-        "label": { "type": "plain_text", "text": `${player.name} の得点` },
+        label: { type: "plain_text", text: `${player.name} の得点` },
       }));
 
       return {
