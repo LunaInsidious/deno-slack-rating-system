@@ -138,7 +138,7 @@ export default SlackFunction(
       const values = view.state.values;
 
       let content = "";
-      let reader = "";
+      let reader: string | undefined;
       let participants: string[] = [];
 
       // 各セクションから値を抽出
@@ -149,7 +149,7 @@ export default SlackFunction(
             content = (actionValue as any).selected_option?.value || "";
           } else if (actionId === "reader_select") {
             // deno-lint-ignore no-explicit-any
-            reader = (actionValue as any).selected_user || "";
+            reader = (actionValue as any).selected_user || undefined;
           } else if (actionId === "participants_select") {
             // deno-lint-ignore no-explicit-any
             participants = (actionValue as any).selected_users || [];
@@ -165,7 +165,7 @@ export default SlackFunction(
         return { error: "参加者を選択してください" };
       }
 
-      validateParticipantsAndReader(participants, reader || undefined);
+      validateParticipantsAndReader(participants, reader);
 
       // 参加者情報を取得
       const playerService = new PlayerService(client);
