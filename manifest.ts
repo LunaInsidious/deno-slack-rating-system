@@ -5,10 +5,12 @@ import { ContentsDatastore } from "./datastores/contents.ts";
 import { ContentRatingsDatastore } from "./datastores/content_ratings.ts";
 import { RatingWorkflow } from "./workflows/rating_workflow.ts";
 import { RankingsWorkflow } from "./workflows/rankings_workflow.ts";
+import { WeeklyReaderThanksWorkflow } from "./workflows/weekly_reader_thanks_workflow.ts";
 import { CollectMatchInfoFunction } from "./functions/collect_match_info.ts";
 import { ProcessMatchFunction } from "./functions/process_match.ts";
 import { GetRankingsFunction } from "./functions/get_rankings.ts";
 import { SelectContentFunction } from "./functions/select_content.ts";
+import { PostWeeklyReaderThanksFunction } from "./functions/post_weekly_reader_thanks.ts";
 
 /**
  * The app manifest contains the app's configuration. This
@@ -19,12 +21,13 @@ export default Manifest({
   name: "Rating System",
   description: "Slack連携レーティング計算システム",
   icon: "assets/card_game.png",
-  workflows: [RatingWorkflow, RankingsWorkflow],
+  workflows: [RatingWorkflow, RankingsWorkflow, WeeklyReaderThanksWorkflow],
   functions: [
     CollectMatchInfoFunction,
     ProcessMatchFunction,
     GetRankingsFunction,
     SelectContentFunction,
+    PostWeeklyReaderThanksFunction,
   ],
   datastores: [PlayersDatastore, MatchesDatastore, ContentsDatastore, ContentRatingsDatastore],
   outgoingDomains: [],
