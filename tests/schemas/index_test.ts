@@ -1,5 +1,6 @@
 import { assertEquals, assertThrows } from "@std/assert";
 import {
+  NO_READER_ID,
   validateContent,
   validateContentRating,
   validateMatch,
@@ -168,9 +169,10 @@ Deno.test("MatchSchema - invalid match object", () => {
   );
 });
 
-Deno.test("MatchSchema - valid match object without reader_id", () => {
+Deno.test("MatchSchema - valid match object with NO_READER_ID", () => {
   const validMatch = {
     id: "match1",
+    reader_id: NO_READER_ID,
     participant_info: [
       {
         participant_id: "player1",
@@ -186,6 +188,29 @@ Deno.test("MatchSchema - valid match object without reader_id", () => {
 
   const result = validateMatch(validMatch);
   assertEquals(result.id, validMatch.id);
-  assertEquals(result.reader_id, undefined);
+  assertEquals(result.reader_id, NO_READER_ID);
   assertEquals(result.participant_info, validMatch.participant_info);
+});
+
+Deno.test("MatchSchema - invalid match object without reader_id", () => {
+  const invalidMatch = {
+    id: "match1",
+    participant_info: [
+      {
+        participant_id: "player1",
+        score: 100,
+        pre_rating: 1500,
+        post_rating: 1510,
+        ranking: 1,
+      },
+    ],
+    played_at: "2023-01-01T00:00:00.000Z",
+    content: "test-content",
+  };
+
+  assertThrows(
+    () => validateMatch(invalidMatch),
+    Error,
+    "Required",
+  );
 });

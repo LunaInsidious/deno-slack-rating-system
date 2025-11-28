@@ -41,10 +41,13 @@ export const ParticipantInfoSchema = z.object({
 });
 export type ParticipantInfo = z.infer<typeof ParticipantInfoSchema>;
 
+// Constant for no reader
+export const NO_READER_ID = "読み手なし";
+
 // Match schema
 export const MatchSchema = z.object({
   id: z.string(),
-  reader_id: z.string().optional(),
+  reader_id: z.string(),
   participant_info: z.array(ParticipantInfoSchema),
   played_at: z.string(),
   content: z.string(),

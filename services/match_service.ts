@@ -1,5 +1,5 @@
 import { SlackAPIClient } from "deno-slack-sdk/types.ts";
-import { Match, ParticipantInfo } from "../schemas/index.ts";
+import { Match, NO_READER_ID, ParticipantInfo } from "../schemas/index.ts";
 import { PlayerService } from "./player_service.ts";
 import { ContentService } from "./content_service.ts";
 import { RatingCalculator } from "./rating_calculator.ts";
@@ -64,7 +64,7 @@ export class MatchService {
 
     const match: Match = {
       id: generateMatchId(),
-      reader_id: readerId,
+      reader_id: readerId || NO_READER_ID,
       participant_info: participantInfo,
       played_at: getCurrentTimestamp(),
       content: contentId,

@@ -1,4 +1,4 @@
-import type { Match, Player } from "../schemas/index.ts";
+import { type Match, NO_READER_ID, type Player } from "../schemas/index.ts";
 import { formatPlayerMention, formatRatingChange } from "../utils/formatters.ts";
 import { SlackAPIClient } from "deno-slack-sdk/types.ts";
 import { ContentService } from "./content_service.ts";
@@ -21,8 +21,10 @@ export class MessageFormatter {
     lines.push("");
     if (reader) {
       lines.push(`読み手: ${formatPlayerMention(reader.id)}`);
-      lines.push("");
+    } else {
+      lines.push(`読み手: ${NO_READER_ID}`);
     }
+    lines.push("");
     lines.push("*順位表:*");
 
     // 全体順位を取得

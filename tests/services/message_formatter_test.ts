@@ -1,6 +1,6 @@
 import { assertEquals } from "@std/assert";
 import { MessageFormatter } from "../../services/message_formatter.ts";
-import type { Match, Player } from "../../schemas/index.ts";
+import { type Match, NO_READER_ID, type Player } from "../../schemas/index.ts";
 import { SlackAPIClient } from "deno-slack-sdk/types.ts";
 
 // テスト用のデータを作成
@@ -160,8 +160,8 @@ Deno.test("MessageFormatter - formatMatchResult without reader", async () => {
 
   // 基本的な要素が含まれているかチェック
   assertEquals(result.includes("🎯 *テスト競技 試合結果*"), true);
-  // 読み手が含まれていないことを確認
-  assertEquals(result.includes("読み手:"), false);
+  // 読み手なしが表示されていることを確認
+  assertEquals(result.includes(`読み手: ${NO_READER_ID}`), true);
   assertEquals(result.includes("*順位表:*"), true);
 
   // 各プレイヤーの情報が含まれているかチェック
